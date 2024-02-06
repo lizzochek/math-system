@@ -1,6 +1,8 @@
 <template>
-  <nav class="border-gray-200 py-2.5 bg-gray-900">
-    <div class="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
+  <nav class="border-gray-200 py-2.5">
+    <div
+      class="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto lg:static relative"
+    >
       <a
         href="/"
         class="flex items-center"
@@ -14,7 +16,7 @@
           Math minds
         </span>
       </a>
-      <div class="flex items-center lg:order-2">
+      <div class="flex items-center lg:order-2 pr-4">
         <a
           href="/login"
           class="text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 bg-purple-600 hover:bg-purple-800"
@@ -54,7 +56,7 @@
         </button>
       </div>
       <div
-        class="items-center justify-between w-full lg:flex lg:w-auto lg:order-1"
+        class="h-[100vh] lg:h-[40px] items-center justify-between w-full lg:bg-transparent bg-gray-900 lg:border-none bg-grey-800 lg:flex lg:w-auto lg:order-1 lg:static top-[42px] absolute right-1 z-10"
         :class="collapseMenu ? 'hidden' : 'visible'"
       >
         <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
@@ -64,7 +66,7 @@
           >
             <a
               :href="item.path"
-              class="block py-2 pl-3 pr-4"
+              class="block py-2 pl-5 pr-4"
               :class="
                 $route.path === item.path
                   ? 'text-white bg-purple-400 rounded lg:bg-transparent lg:text-purple-400 lg:p-0 text-white'
