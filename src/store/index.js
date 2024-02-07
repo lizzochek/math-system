@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import firebase from "./modules/firebase";
 
 export default createStore({
   state: {
@@ -13,4 +14,5 @@ export default createStore({
     },
   },
   actions: {},
+  modules: { firebase },
 });

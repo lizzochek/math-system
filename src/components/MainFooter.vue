@@ -5,7 +5,7 @@
       <div class="md:flex md:justify-between px-5">
         <div class="mb-6 md:mb-0">
           <a
-            href="https://MathMinds.com/"
+            href="/"
             class="flex items-center"
           >
             <img
