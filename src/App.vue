@@ -2,6 +2,7 @@
   <div :class="selectedMode">
     <router-view v-slot="{ Component }">
       <MainHeader />
+      <ErrorModal v-if="isError" />
       <transition name="fade">
         <component :is="Component" />
       </transition>
@@ -13,11 +14,17 @@
 <script>
   import MainHeader from "./components/MainHeader.vue";
   import MainFooter from "./components/MainFooter.vue";
+  import ErrorModal from "./components/common/ErrorModal.vue";
   export default {
-    components: { MainHeader, MainFooter },
+    components: { MainHeader, MainFooter, ErrorModal },
     name: "App",
     async beforeCreate() {
       await this.$store.commit("initialiseStore");
+    },
+    computed: {
+      isError() {
+        return this.$store.state.errorMessage;
+      },
     },
   };
 </script>

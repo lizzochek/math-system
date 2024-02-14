@@ -1,9 +1,9 @@
 import { createStore } from "vuex";
-import firebase from "./modules/firebase";
+import auth from "./modules/auth";
 
 export default createStore({
   state: {
-    errors: {},
+    errorMessage: "",
   },
   getters: {},
   mutations: {
@@ -12,7 +12,19 @@ export default createStore({
         this.replaceState(Object.assign(state, JSON.parse(localStorage.getItem("state"))));
       }
     },
+    setPropByName(_, data) {
+      const { rootState, payload } = data;
+      if (payload.module) {
+        rootState[payload.module][payload.property] = payload.value;
+      } else {
+        rootState[payload.property] = payload.value;
+      }
+    },
   },
-  actions: {},
-  modules: { firebase },
+  actions: {
+    setPropByName({ commit, rootState }, payload) {
+      commit("setPropByName", { rootState, payload });
+    },
+  },
+  modules: { auth },
 });

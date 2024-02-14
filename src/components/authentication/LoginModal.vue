@@ -22,10 +22,7 @@
         <span class="absolute px-3 font-medium">or</span>
         <hr class="w-44 h-px my-8 bg-gray-400 border-0" />
       </div>
-      <form
-        class="flex flex-col gap-3"
-        @click="logIn"
-      >
+      <form class="flex flex-col gap-3">
         <label for="email">Email address:</label>
         <input
           class="border border-white rounded-lg bg-gray-600 text-white py-1 px-2"
@@ -53,7 +50,13 @@
           Forgot your password?
         </p>
       </div>
-      <button class="py-1 w-full bg-purple-600 rounded-lg">Log in to your account</button>
+      <button
+        type="submit"
+        class="py-1 w-full bg-purple-600 rounded-lg hover:bg-purple-700"
+        @click="logIn"
+      >
+        Log in to your account
+      </button>
       <p class="pt-3 text-sm">
         Don’t have an account yet?
         <span
@@ -68,7 +71,12 @@
 
 <script>
   import GoogleIcon from "../icons/GoogleIcon.vue";
-  import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+  import {
+    getAuth,
+    signInWithPopup,
+    GoogleAuthProvider,
+    signInWithEmailAndPassword,
+  } from "firebase/auth";
 
   export default {
     name: "LoginModal",
@@ -82,25 +90,38 @@
       };
     },
     methods: {
-      logIn() {},
       logInWithGoogle() {
         const provider = new GoogleAuthProvider();
         const auth = getAuth();
         signInWithPopup(auth, provider)
           .then((result) => {
-            // const credential = GoogleAuthProvider.credentialFromResult(result);
-            // const token = credential.accessToken;
             const user = result.user;
-            console.log(user);
-            // IdP data available using getAdditionalUserInfo(result)
+            this.$store.dispatch("setPropByName", {
+              module: "auth",
+              property: "user",
+              value: user,
+            });
           })
           .catch((error) => {
-            // Handle Errors here.
-            // const errorCode = error.code;
-            // const errorMessage = error.message;
-            // The email of the user's account used.
-            // const email = error.customData.email;
             console.log(error);
+          });
+      },
+      logIn() {
+        const auth = getAuth();
+        signInWithEmailAndPassword(auth, this.email, this.password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            this.$store.dispatch("setPropByName", {
+              module: "auth",
+              property: "user",
+              value: user,
+            });
+          })
+          .catch((error) => {
+            this.$store.dispatch("setPropByName", {
+              property: "errorMessage",
+              value: error.message,
+            });
           });
       },
     },
