@@ -25,22 +25,38 @@
       <form class="flex flex-col gap-3">
         <label for="email">Email address:</label>
         <input
-          class="border border-white rounded-lg bg-gray-600 text-white py-1 px-2"
+          class="border rounded-lg bg-gray-600 py-1 px-2"
+          :class="
+            errorMessage === 'Invalid email' ? 'border-red-700 text-red-700' : 'border-white text-white'
+          "
           id="email"
-          v-model="formData.email"
+          v-model="email"
           type="email"
           placeholder="Enter your email"
           required
         />
+        <p
+          v-if="errorMessage === 'Invalid email'"
+          class="text-red-700"
+        >
+          Please enter a valid email
+        </p>
         <label for="password">Password:</label>
         <input
-          class="border border-white rounded-lg bg-gray-600 text-white py-1 px-2"
+          class="border rounded-lg bg-gray-600 py-1 px-2"
+          :class="errorMessage === 'Invalid password' ? 'border-red-700 text-red-700' : 'border-white text-white'"
           id="password"
-          v-model="formData.password"
+          v-model="password"
           type="password"
           placeholder="Enter your password"
           required
         />
+        <p
+          v-if="errorMessage === 'Invalid password'"
+          class="text-red-700"
+        >
+          Password has to be 8 characters or more
+        </p>
       </form>
       <div>
         <p
@@ -83,10 +99,9 @@
     components: { GoogleIcon },
     data() {
       return {
-        formData: {
-          email: "",
-          password: "",
-        },
+        email: "",
+        password: "",
+        errorMessage: "",
       };
     },
     methods: {
@@ -107,22 +122,37 @@
           });
       },
       logIn() {
-        const auth = getAuth();
-        signInWithEmailAndPassword(auth, this.email, this.password)
-          .then((userCredential) => {
-            const user = userCredential.user;
-            this.$store.dispatch("setPropByName", {
-              module: "auth",
-              property: "user",
-              value: user,
+        if (!this.errorMessage.length) {
+          const auth = getAuth();
+          signInWithEmailAndPassword(auth, this.email, this.password)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              this.$store.dispatch("setPropByName", {
+                module: "auth",
+                property: "user",
+                value: user,
+              });
+            })
+            .catch((error) => {
+              this.$store.dispatch("setPropByName", {
+                property: "errorMessage",
+                value: error.message,
+              });
             });
-          })
-          .catch((error) => {
-            this.$store.dispatch("setPropByName", {
-              property: "errorMessage",
-              value: error.message,
-            });
-          });
+        }
+      },
+    },
+    watch: {
+      email: {
+        handler(newVal) {
+          // eslint-disable-next-line
+          this.errorMessage = newVal.search(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g) === -1 ? "Invalid email" : "";
+        },
+      },
+      password: {
+        handler(newVal) {
+          this.errorMessage = newVal.length < 8 ? "Invalid password" : "";
+        },
       },
     },
   };
