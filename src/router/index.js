@@ -11,6 +11,16 @@ const routes = [
     name: "login",
     component: () => import("../views/AuthPage.vue"),
   },
+  {
+    path: "/my-account",
+    name: "account",
+    component: () => import("../views/MyAccount.vue"),
+  },
+  {
+    path: "/courses",
+    name: "courses",
+    component: () => import("../views/CourseList.vue"),
+  },
   // {
   //   path: '/about',
   //   name: 'about',
