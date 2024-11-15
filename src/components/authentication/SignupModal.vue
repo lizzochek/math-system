@@ -2,19 +2,7 @@
   <div
     class="rounded-lg bg-gray-800 h-full text-white p-[2rem] w-[90%] m-auto md:w-[60%] lg:w-[40%]"
   >
-    <h1 class="text-3xl text-center">Log in</h1>
-    <div
-      class="flex flex-row justify-center border rounded-lg border-white gap-2 p-2 my-4"
-      @click="logInWithGoogle"
-    >
-      <GoogleIcon class="h-6 w-6" />
-      <button>Log in with Google</button>
-    </div>
-    <div class="flex flex-row items-center justify-center w-full gap-8">
-      <hr class="w-44 h-px my-8 bg-gray-400 border-0" />
-      <span class="absolute px-3 font-medium">or</span>
-      <hr class="w-44 h-px my-8 bg-gray-400 border-0" />
-    </div>
+    <h1 class="text-3xl text-center">Sign up</h1>
     <form class="flex flex-col gap-3">
       <label for="email">Email address:</label>
       <input
@@ -56,90 +44,83 @@
       >
         Password has to be 8 characters or more
       </p>
-    </form>
-    <div>
-      <p
-        class="text-sm text-right hover:underline hover:text-purple-600 py-3 pr-1 text-purple-400"
-        @click="$emit('setOption', 'resetPassword')"
+      <input
+        class="border rounded-lg bg-gray-600 py-1 px-2"
+        id="name"
+        v-model="name"
+        type="name"
+        placeholder="Enter your name"
+        required
+      />
+      <label>Student / Teacher:</label>
+      <select
+        class="border rounded-lg bg-gray-600 py-1 px-2 mb-4"
+        id="userType"
+        v-model="userType"
+        required
       >
-        Forgot your password?
-      </p>
-    </div>
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+      </select>
+    </form>
     <button
       type="submit"
       class="py-1 w-full bg-purple-600 rounded-lg hover:bg-purple-700"
-      @click="logIn"
+      @click="createAccount"
     >
-      Log in to your account
+      Create account
     </button>
     <p class="pt-3 text-sm">
-      Don’t have an account yet?
+      Already have an account?
       <span
         class="text-purple-400 hover:underline hover:text-purple-600"
-        @click="$emit('setOption', 'signUp')"
-        >Sign up here</span
+        @click="$emit('setOption', 'login')"
+        >Log in here</span
       >
     </p>
   </div>
 </template>
 
 <script>
-  import GoogleIcon from "../icons/GoogleIcon.vue";
-  import { doc, getDoc } from "firebase/firestore";
-  import {
-    getAuth,
-    signInWithPopup,
-    GoogleAuthProvider,
-    signInWithEmailAndPassword,
-  } from "firebase/auth";
-
+  import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+  import { collection, addDoc } from "firebase/firestore"; 
   export default {
     name: "LoginModal",
-    components: { GoogleIcon },
     data() {
       return {
         email: "",
         password: "",
+        userType: null,
+        name: null,
         errorMessage: "",
       };
     },
     methods: {
-      logInWithGoogle() {
-        const provider = new GoogleAuthProvider();
+      createAccount() {
         const auth = getAuth();
-        signInWithPopup(auth, provider)
-          .then(async (result) => {
-            const user = result.user;
-            const document = await getDoc(doc(this.$store.state.db, "users", user.uid));
+        createUserWithEmailAndPassword(auth, this.email, this.password)
+          .then((registeredUser) => {
+            const user = registeredUser.user;
+            addDoc(collection(this.$store.state.db, "users"), {
+              uid: user.uid,
+              displayName: this.name,
+              email: user.email,
+              userType: this.userType,
+            });
             this.$store.dispatch("setPropByName", {
               module: "auth",
               property: "user",
-              value: document.data(),
+              value: {
+              uid: user.uid,
+              displayName: this.name,
+              email: user.email,
+              userType: this.userType,
+            },
             });
-            this.$router.push("/my-account");
           })
           .catch((error) => {
             console.log(error);
           });
-      },
-      logIn() {
-        if (!this.errorMessage.length) {
-          const auth = getAuth();
-          signInWithEmailAndPassword(auth, this.email, this.password)
-            .then(async (userCredential) => {
-              const user = userCredential.user;
-              const document = await getDoc(doc(this.$store.state.db, "users", user.uid));
-              this.$store.dispatch("setPropByName", {
-                module: "auth",
-                property: "user",
-                value: document.data()
-            });
-              this.$router.push("/my-account");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
       },
     },
     watch: {

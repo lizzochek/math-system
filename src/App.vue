@@ -1,5 +1,5 @@
 <template>
-  <div :class="selectedMode">
+  <div>
     <router-view v-slot="{ Component }">
       <MainHeader />
       <ErrorModal v-if="isError" />
@@ -12,8 +12,8 @@
 </template>
 
 <script>
-  import MainHeader from "./components/MainHeader.vue";
-  import MainFooter from "./components/MainFooter.vue";
+  import MainHeader from "./components/common/MainHeader.vue";
+  import MainFooter from "./components/common/MainFooter.vue";
   import ErrorModal from "./components/common/ErrorModal.vue";
   export default {
     components: { MainHeader, MainFooter, ErrorModal },

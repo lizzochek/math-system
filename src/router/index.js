@@ -23,4 +23,15 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  const state = JSON.parse(localStorage.getItem("state"));
+  if (to.meta.requiresAuth && !state?.auth?.user?.uid) {
+    next("/login");
+  } else if ((to.path == "/main" || to.path == "/login") && state?.auth?.user?.uid) {
+    next("/my-account");
+  } else {
+    next();
+  }
+});
+
 export default router;

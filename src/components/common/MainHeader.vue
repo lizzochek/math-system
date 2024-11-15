@@ -18,11 +18,13 @@
       </a>
       <div class="flex items-center lg:order-2 pr-4">
         <a
+          v-if="!user.email"
           href="/login"
           class="text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 bg-purple-600 hover:bg-purple-800"
         >
           Log in
         </a>
+        <span v-else class="text-white lg:p-0 text-gray-400 hover:bg-gray-700 hover:text-white lg:hover:bg-transparent border-gray-700">{{ user.displayName }}</span>
         <button
           type="button"
           @click="() => (collapseMenu = !collapseMenu)"
@@ -83,13 +85,18 @@
 </template>
 
 <script>
-  export default {
+export default {
     name: "MainHeader",
     data() {
       return {
         collapseMenu: true,
-        menuItems: [{ name: "Login", path: "/login" }],
+        menuItems: [{ name: "My profile", path: "/my-account" }, { name: "Courses", path: "/courses" }, { name: "About", path: "/about" }, { name: "Help", path: "/help" }],
       };
+    },
+    computed: {
+      user() {
+        return this.$store.state.auth.user;
+      }
     },
   };
 </script>
