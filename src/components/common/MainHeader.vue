@@ -24,7 +24,11 @@
         >
           Log in
         </a>
-        <span v-else class="text-white lg:p-0 text-gray-400 hover:bg-gray-700 hover:text-white lg:hover:bg-transparent border-gray-700">{{ user.displayName }}</span>
+        <span
+          v-else
+          class="text-white lg:p-0 text-gray-400 hover:bg-gray-700 hover:text-white lg:hover:bg-transparent border-gray-700"
+          >{{ user.displayName }}</span
+        >
         <button
           type="button"
           @click="() => (collapseMenu = !collapseMenu)"
@@ -85,18 +89,24 @@
 </template>
 
 <script>
-export default {
+  export default {
     name: "MainHeader",
     data() {
       return {
         collapseMenu: true,
-        menuItems: [{ name: "My profile", path: "/my-account" }, { name: "Courses", path: "/courses" }, { name: "About", path: "/about" }, { name: "Help", path: "/help" }],
+        menuItems: [
+          { name: "My profile", path: "/my-account" },
+          { name: "Courses", path: "/courses" },
+          { name: "Authors", path: "/authors" },
+          { name: "About", path: "/about" },
+          { name: "Help", path: "/help" },
+        ],
       };
     },
     computed: {
       user() {
         return this.$store.state.auth.user;
-      }
+      },
     },
   };
 </script>

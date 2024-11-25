@@ -4,6 +4,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "./index.css";
+import VCalendar from 'v-calendar';
+import 'v-calendar/style.css';
 
 store.subscribe((mutation, state) => {
   if (mutation.type != "initialiseStore") {
@@ -11,7 +13,7 @@ store.subscribe((mutation, state) => {
   }
 });
 
-createApp(App).use(router).use(store).mount("#app");
+createApp(App).use(router).use(store).use(VCalendar, {}).mount("#app");
 const db = initFirebase();
 
 store.state.db = db;

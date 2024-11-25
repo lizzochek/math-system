@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import auth from "./modules/auth";
+import courses from "./modules/courses";
 
 export default createStore({
   state: {
@@ -26,5 +27,5 @@ export default createStore({
       commit("setPropByName", { rootState, payload });
     },
   },
-  modules: { auth },
+  modules: { auth, courses },
 });
