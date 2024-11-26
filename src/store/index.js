@@ -5,6 +5,7 @@ import courses from "./modules/courses";
 export default createStore({
   state: {
     errorMessage: "",
+    usageStatistics: [],
   },
   getters: {},
   mutations: {
@@ -20,6 +21,12 @@ export default createStore({
       } else {
         rootState[payload.property] = payload.value;
       }
+    },
+    formattedTime: (state) => {
+      const hours = Math.floor(state.timeSpentToday / 3600);
+      const minutes = Math.floor((state.timeSpentToday % 3600) / 60);
+      const seconds = state.timeSpentToday % 60;
+      return `${hours}h ${minutes}m ${seconds}s`;
     },
   },
   actions: {
