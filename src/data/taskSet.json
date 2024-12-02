@@ -1,0 +1,208 @@
+{
+  "arithmetic": {
+    "level": {
+      "beginner": [
+        {
+          "task": "Solve the equation: {{operands0}} {{operators0}} {{operands1}} = ",
+          "answer": "{{operands0}} {{operators0}} {{operands1}}"
+        }
+      ],
+      "intermediate": [
+        {
+          "task": "Solve the equation: {{operands0}} {{operators0}} {{operands1}} {{operators1}} {{operands2}} = ",
+          "answer": "{{operands0}} {{operators0}} {{operands1}} {{operators1}} {{operands2}}"
+        }
+      ],
+      "advanced": [
+        {
+          "task": "Solve the equation: {{operands0}} {{operators0}} {{operands1}} {{operators2}} {{operands2}} {{operators3}} {{operands3}} = ",
+          "answer": "{{operands0}} {{operators0}} {{operands1}} {{operators2}} {{operands2}} {{operators3}} {{operands3}}"
+        }
+      ]
+    }
+  },
+  "algebra": {
+    "level": {
+      "beginner": [
+        {
+          "task": "Solve for x: {{variableCoefficients0}}x {{operators0}} {{operands0}} = {{operands1}}",
+          "answer": "({{operands1}} {{reverseOperator(operators0)}} {{operands0}}) / {{variableCoefficients0}}"
+        },
+        {
+          "task": "A chocolate bar costs x pence and a drink costs y pence. Write down an expression for the cost of {{operands0}} chocolate bars and {{operands1}} drinks.",
+          "answer": "{{operands0}}c+{{operands1}}d"
+        },
+        {
+          "task": "Simplify: {{operands0}}x + {{operands1}}x",
+          "answer": "({{operands0}} + {{operands1}})x"
+        },
+        {
+          "task": "Find the value of x if 2x = {{operands0}}",
+          "answer": "{{operands0}} / 2"
+        }
+      ],
+      "intermediate": [
+        {
+          "task": "Solve for x: {{variableCoefficients0}}x {{operators0}} {{operands0}} {{operators1}} {{variableCoefficients0}}x {{operands1}} {{operators2}} = {{operands2}}",
+          "answer": "({{operands1}} {{reverseOperator(operators0)}} {{operands0}}) / {{variableCoefficients0}}"
+        },
+        {
+          "task": "Simplify: {{operands0}}x + {{operands1}}x {{operators0}} {{operands2}} {{operators1}} {{operands3}}",
+          "answer": "({{operands0}} + {{operands1}})x {{operators0}} {{operands2}} {{operators1}} {{operands3}}"
+        },
+        {
+          "task": "Find the value of x if 2x {{operators0}} {{operands1}} = {{operands0}}",
+          "answer": "({{operands0}} {{reverseOperator(operators0)}} {{operands1}})/ 2"
+        }
+      ],
+      "advanced": [
+        {
+          "task": "Solve the equation: {{operands0}} {{operators0}} {{operands1}} {{operators2}} {{operands2}} {{operators3}} {{operands3}} = ",
+          "answer": "({{operands1}} {{reverseOperator(operators0)}} {{operands0}}) / {{variableCoefficients0}}"
+        }
+      ]
+    }
+  },
+  "geometry": {
+    "level": {
+      "beginner": [
+        {
+          "task": "Calculate the perimeter of a rectangle with length {{operands0}} units and width {{operands1}} units.",
+          "answer": "2 * ({{operands0}} + {{operands1}})"
+        },
+        {
+          "task": "Find the area of a square with side {{operands0}} units.",
+          "answer": "{{operands0}} * {{operands0}}"
+        },
+        {
+          "task": "A triangle has a base of {{operands0}} units and height of {{operands1}} units. Find its area.",
+          "answer": "0.5 * {{operands0}} * {{operands1}}"
+        }
+      ],
+      "intermediate": [
+        {
+          "task": "Calculate the area of a circle with radius {{operands0}} units. (Use π ≈ 3.14)",
+          "answer": "3.14 * ({{operands0}} * {{operands0}})"
+        },
+        {
+          "task": "Find the volume of a cylinder with radius {{operands0}} units and height {{operands1}} units. (Use π ≈ 3.14)",
+          "answer": "3.14 * ({{operands0}} * {{operands0}}) * {{operands1}}"
+        },
+        {
+          "task": "Find the diagonal of a rectangle with length {{operands0}} units and width {{operands1}} units.",
+          "answer": "Math.sqrt(({{operands0}} * {{operands0}}) + ({{operands1}} * {{operands1}}))"
+        }
+      ],
+      "advanced": [
+        {
+          "task": "Find the area of a triangle using Heron's formula with sides {{operands0}}, {{operands1}}, and {{operands2}} units.",
+          "answer": "Math.sqrt(s * (s - {{operands0}}) * (s - {{operands1}}) * (s - {{operands2}})), where s = ({{operands0}} + {{operands1}} + {{operands2}}) / 2"
+        },
+        {
+          "task": "Calculate the surface area of a sphere with radius {{operands0}} units. (Use π ≈ 3.14)",
+          "answer": "4 * 3.14 * ({{operands0}} * {{operands0}})"
+        }
+      ]
+    }
+  },
+  "trigonometry": {
+    "level": {
+      "beginner": [
+        {
+          "task": "Find the sine of {{operands0}} degrees.",
+          "answer": "Math.sin({{operands0}} * Math.PI / 180)"
+        },
+        {
+          "task": "Find the cosine of {{operands0}} degrees.",
+          "answer": "Math.cos({{operands0}} * Math.PI / 180)"
+        },
+        {
+          "task": "Find the tangent of {{operands0}} degrees.",
+          "answer": "Math.tan({{operands0}} * Math.PI / 180)"
+        },
+        {
+          "task": "Calculate the hypotenuse of a right triangle with sides {{operands0}} and {{operands1}}.",
+          "answer": "Math.sqrt({{operands0}} * {{operands0}} + {{operands1}} * {{operands1}})"
+        }
+      ],
+      "intermediate": [
+        {
+          "task": "Solve for angle θ where sin(θ) = {{operands0}}.",
+          "answer": "Math.asin({{operands0}}) * 180 / Math.PI"
+        },
+        {
+          "task": "Solve for angle θ where cos(θ) = {{operands0}}.",
+          "answer": "Math.acos({{operands0}}) * 180 / Math.PI"
+        },
+        {
+          "task": "Solve for angle θ where tan(θ) = {{operands0}}.",
+          "answer": "Math.atan({{operands0}}) * 180 / Math.PI"
+        },
+        {
+          "task": "Find the area of a triangle with sides {{operands0}} and {{operands1}} and included angle {{operands2}} degrees.",
+          "answer": "0.5 * {{operands0}} * {{operands1}} * Math.sin({{operands2}} * Math.PI / 180)"
+        }
+      ],
+      "advanced": [
+        {
+          "task": "Prove the identity: sin²({{operands0}}) + cos²({{operands0}}) = 1 for {{operands0}} degrees.",
+          "answer": "Math.pow(Math.sin({{operands0}} * Math.PI / 180), 2) + Math.pow(Math.cos({{operands0}} * Math.PI / 180), 2)"
+        },
+        {
+          "task": "Find the solution to sin(2θ) = {{operands0}} in the range 0° ≤ θ ≤ 180°.",
+          "answer": "Math.asin({{operands0}}) / 2 * 180 / Math.PI"
+        },
+        {
+          "task": "Find the length of the side opposite to an angle of {{operands0}} degrees in a triangle with hypotenuse {{operands1}}.",
+          "answer": "{{operands1}} * Math.sin({{operands0}} * Math.PI / 180)"
+        },
+        {
+          "task": "Solve the equation: sin({{operands0}}) + cos({{operands1}}) = {{operands2}}.",
+          "answer": "Math.sin({{operands0}} * Math.PI / 180) + Math.cos({{operands1}} * Math.PI / 180)"
+        }
+      ]
+    }
+  },
+  "probability": {
+    "level": {
+      "beginner": [
+        {
+          "task": "If a coin is flipped, what is the probability of getting tails?",
+          "answer": "1 / 2"
+        },
+        {
+          "task": "A bag contains {{operands0}} red balls and {{operands1}} blue balls. What is the probability of drawing a red ball?",
+          "answer": "{{operands0}} / ({{operands0}} + {{operands1}})"
+        },
+        {
+          "task": "A spinner is divided into {{operands0}} equal parts. What is the probability of landing on one specific part?",
+          "answer": "1 / {{operands0}}"
+        }
+      ],
+      "intermediate": [
+        {
+          "task": "A bag contains {{operands0}} red balls, {{operands1}} blue balls, and {{operands2}} green balls. What is the probability of drawing a blue ball?",
+          "answer": "{{operands1}} / ({{operands0}} + {{operands1}} + {{operands2}})"
+        },
+        {
+          "task": "What is the probability of flipping two coins and getting at least one head?",
+          "answer": "3 / 4"
+        }
+      ],
+      "advanced": [
+        {
+          "task": "A bag contains {{operands0}} red balls, {{operands1}} blue balls, and {{operands2}} green balls. Two balls are drawn at random. What is the probability that both are red?",
+          "answer": "({{operands0}} / ({{operands0}} + {{operands1}} + {{operands2}})) * (({{operands0}} - 1) / ({{operands0}} + {{operands1}} + {{operands2}} - 1))"
+        },
+        {
+          "task": "What is the probability of drawing two aces consecutively from a deck of {{operands0}} cards without replacement?",
+          "answer": "(4 / {{operands0}}) * (3 / ({{operands0}} - 1))"
+        },
+        {
+          "task": "A family has three children. What is the probability that all are girls?",
+          "answer": "(1 / 2) * (1 / 2) * (1 / 2)"
+        }
+      ]
+    }
+  }
+}

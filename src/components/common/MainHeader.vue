@@ -95,6 +95,7 @@
       return {
         collapseMenu: true,
         menuItems: [
+          { name: "AI Tasks", path: "/ai-tasks" },
           { name: "My profile", path: "/my-account" },
           { name: "Courses", path: "/courses" },
           { name: "Authors", path: "/authors" },

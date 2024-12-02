@@ -23,6 +23,12 @@ const routes = [
   },
   { path: "/courses/:id", name: "course", component: () => import("../views/CourseView.vue") },
   { path: "/authors", name: "authors", component: () => import("../views/AuthorsList.vue") },
+  {
+    path: "/generated-ai-tasks",
+    name: "generated-ai-tasks",
+    component: () => import("../views/AITasks.vue"),
+  },
+  { path: "/ai-tasks", name: "ai-tasks", component: () => import("../views/AITasksView.vue") },
   // {
   //   path: '/about',
   //   name: 'about',
