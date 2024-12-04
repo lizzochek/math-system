@@ -6,6 +6,9 @@ export default {
     courses: [],
     author: null,
     authors: [],
+    courseTasks: null,
+    courseMaterials: null,
+    articles: [],
   },
   getters: {
     getCourses(state) {
@@ -17,11 +20,20 @@ export default {
     getAuthors(state) {
       return state.authors;
     },
+    getCourseTasks(state) {
+      return state.courseTasks;
+    },
     getCourse: (state) => (id) => {
       return state.courses.find((course) => course.id === id);
     },
     getUserCourses: (state) => (id) => {
       return state.courses.find((course) => course.id === id);
+    },
+    getCourseMaterials: (state) => {
+      return state.courseMaterials;
+    },
+    getArticleById: (state) => (id) => {
+      return state.articles.find((article) => article.id === id);
     },
   },
   mutations: {
@@ -57,6 +69,61 @@ export default {
       });
       rootState.auth.user.userCourses.push(newData);
     },
+    async getCourseTasks(state, { rootState, payload }) {
+      state.courseTasks = [];
+      const course = state.courses.find((course) => course.id === payload.id);
+      JSON.parse(JSON.stringify(course.content.tasks)).forEach(async (task) => {
+        let querySnapshot = await getDoc(doc(rootState.db, "tasks", task.toString()));
+        state.courseTasks.push({
+          id: querySnapshot.id,
+          ...querySnapshot.data(),
+          dueDate: querySnapshot.data().dueDate.toDate().toString().split("00:00:00")[0],
+        });
+      });
+    },
+    async getCourseMaterials(state, { rootState, payload }) {
+      state.courseMaterials = { articles: [], videos: [] };
+      await payload.course.content.articles.forEach(async (article) => {
+        let querySnapshot = await getDoc(doc(rootState.db, "articles", article.toString()));
+        state.courseMaterials.articles.push({
+          id: querySnapshot.id,
+          ...querySnapshot.data(),
+        });
+      });
+      await payload.course.content.videos.forEach(async (video) => {
+        let querySnapshot = await getDoc(doc(rootState.db, "videos", video.toString()));
+        state.courseMaterials.videos.push({
+          id: querySnapshot.id,
+          ...querySnapshot.data(),
+        });
+      });
+    },
+    async markArticleCompleted(state, { rootState, payload }) {
+      const userCourses = rootState.auth.user.userCourses;
+      const userCourse = userCourses.find((course) => course.courseId === payload.courseId);
+      const newData = {
+        ...userCourses,
+        [userCourses.indexOf(userCourse)]: {
+          ...userCourse,
+          completedArticles: [...userCourse.completedArticles, payload.id],
+        },
+      };
+
+      await updateDoc(doc(rootState.db, "users", rootState.auth.user.uid.trim()), {
+        userCourses: newData,
+      });
+      rootState.auth.user.userCourses = newData;
+    },
+    async fetchArticles(state, { rootState }) {
+      state.articles = [];
+      const querySnapshot = await getDocs(collection(rootState.db, "articles"));
+      querySnapshot.forEach((doc) => {
+        state.articles.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+    },
   },
   actions: {
     async fetchCourses({ commit, rootState }) {
@@ -70,6 +137,18 @@ export default {
     },
     async enrollToCourse({ commit, rootState }, payload) {
       commit("enrollToCourse", { rootState, payload });
+    },
+    async getCourseTasks({ commit, rootState }, payload) {
+      commit("getCourseTasks", { rootState, payload });
+    },
+    async getCourseMaterials({ commit, rootState }, payload) {
+      commit("getCourseMaterials", { rootState, payload });
+    },
+    async markArticleCompleted({ commit, rootState }, payload) {
+      commit("markArticleCompleted", { rootState, payload });
+    },
+    async fetchArticles({ commit, rootState }) {
+      commit("fetchArticles", { rootState });
     },
   },
 };
