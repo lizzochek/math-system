@@ -29,7 +29,7 @@ export default function getRandomTasks(tasks, level, amount) {
       variableCoefficients,
     });
 
-    if (answer.includes("x")) {
+    if (answer.includes("x") && !task.task.includes("A chocolate bar costs")) {
       answer = simplify(answer).toString().replace(/ /g, "");
     } else if (answer.includes("Math")) {
       let evalAnswer = Function(`'use strict'; return (${answer});`)();
@@ -37,8 +37,6 @@ export default function getRandomTasks(tasks, level, amount) {
     } else if (!/[a-zA-Z]/g.test(answer)) {
       answer = Math.round(evaluate(answer) * 100) / 100;
     }
-
-    if (isNaN(answer)) answer = "None";
 
     generatedTasks.push({
       task: parseTaskString(task.task, {
@@ -50,7 +48,6 @@ export default function getRandomTasks(tasks, level, amount) {
     });
   }
 
-  console.log(generatedTasks);
   return generatedTasks;
 }
 

@@ -20,23 +20,48 @@
           fill="currentFill"
         />
       </svg>
-      <p class="text-white mt-5 text-center">Please wait, we are generating your tasks 🙃</p>
+      <p class="text-white mt-5 text-center">
+        {{
+          answersSubmitted
+            ? "Please wait, we are evaluating your answers 🙃"
+            : "Please wait, we are generating your tasks 🙃"
+        }}
+      </p>
     </div>
-    <div v-else>
+    <div
+      v-if="!isLoading && !answersSubmitted"
+      class="flex flex-col items-center"
+    >
       <h1 class="text-2xl text-white text-center mb-4">
         Here are the tasks for the {{ selectedTopic }} topic
       </h1>
-
-      <p class="text-white text-center my-3">
-        Important❗️ Write your answers with no spaces. If you get infinity write it as Infinity, if
-        the task does not have a solution, write is as None
-      </p>
 
       <div
         class="flex flex-col gap-2 rounded-lg bg-gray-800 h-full text-white p-[2rem] w-[90%] m-auto md:w-[60%] lg:w-[70%] mb-5"
         v-for="(task, idx) in generatedTasks"
         :key="idx"
       >
+        <div class="flex flex-row gap-1">
+          <p>Task {{ idx + 1 }}</p>
+          <div class="relative group">
+            <img
+              style="padding-bottom: 3px"
+              src="../assets/tooltip.png"
+              width="25"
+              height="25"
+            />
+            <div
+              class="absolute bottom-full left-1/6 transform -translate-x-1/6 mb-2 w-max px-2 py-1 text-sm text-white bg-gray-700 rounded shadow-lg opacity-0 group-hover:opacity-100"
+            >
+              Write your answers with no spaces.
+              <br />
+              If you get infinity write it as Infinity, if the task does not have a solution, write
+              is as NaN.
+              <br />
+              Round your unswers to up to 2 digits after comma.
+            </div>
+          </div>
+        </div>
         <p>
           {{ task.task }}
         </p>
@@ -51,11 +76,39 @@
         />
       </div>
       <button
-        class="py-1 px-2 bg-purple-600 rounded-lg hover:bg-purple-700"
+        class="w-[20%] m-auto py-1 px-2 bg-purple-600 rounded-lg hover:bg-purple-700"
         required
         @click="submitAnswers"
       >
         Submit your answers
+      </button>
+    </div>
+    <div
+      v-if="!isLoading && answersSubmitted"
+      class="flex flex-col items-center"
+    >
+      <h1 class="text-xl text-white text-center mb-4">Your test result:</h1>
+      <p class="text-white text-center mb-4">
+        If you believe the suggested answer is incorrect, please contact your teacher or support.
+      </p>
+      <div
+        class="flex flex-col gap-2 rounded-lg bg-gray-800 h-full text-white p-[2rem] w-[90%] m-auto md:w-[60%] lg:w-[70%] mb-5"
+        v-for="(task, idx) in generatedTasks"
+        :key="idx"
+      >
+        <p>Task {{ idx + 1 }} {{ correctAnswers[idx] ? "✅" : "❌" }}</p>
+        <p>
+          {{ task.task }}
+        </p>
+        <p>Correct answer: {{ generatedTasks[idx].answer }}</p>
+        <p>Your answer: {{ yourAnswers[idx] }}</p>
+      </div>
+      <button
+        class="w-[20%] m-auto py-1 px-2 bg-purple-600 rounded-lg hover:bg-purple-700"
+        required
+        @click="$router.push('/ai-tasks')"
+      >
+        Try again
       </button>
     </div>
   </div>
@@ -77,6 +130,8 @@
         task: "",
         isLoading: false,
         yourAnswers: [],
+        answersSubmitted: false,
+        correctAnswers: [],
       };
     },
     async mounted() {
@@ -164,8 +219,8 @@
       },
       async generateTasks() {
         const studentData = JSON.parse(
-          JSON.stringify(this.$store.getters["auth/getUser"].userAITasks)
-        )[0][this.selectedTopic];
+          JSON.stringify(this.$store.getters["auth/getUser"].userAiTasks)
+        )[this.selectedTopic];
 
         const inputTensor = tf.tensor2d([
           [studentData.score / 100, studentData.attempts / 10, studentData.correct / 10],
@@ -184,7 +239,20 @@
         outputTensor.dispose();
       },
       submitAnswers() {
-        this.$emit("submitAnswers", this.yourAnswers);
+        this.answersSubmitted = true;
+        this.isLoading = true;
+
+        const rightAnswers = this.generatedTasks.map((el) => el.answer.toString());
+        const userAnswers = JSON.parse(JSON.stringify(this.yourAnswers));
+        this.correctAnswers = userAnswers.map((el, idx) => rightAnswers[idx] === el);
+        const numberOfCorrect = this.correctAnswers.filter(Boolean).length;
+        this.$store.dispatch("auth/setAiTasks", {
+          topic: this.selectedTopic,
+          numCorrect: numberOfCorrect,
+          level: this.predictedLevel,
+        });
+
+        this.isLoading = false;
       },
     },
   };

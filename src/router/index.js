@@ -14,6 +14,7 @@ const routes = [
   {
     path: "/my-account",
     name: "account",
+    meta: { requiresAuth: true },
     component: () => import("../views/MyAccount.vue"),
   },
   {
@@ -26,9 +27,15 @@ const routes = [
   {
     path: "/generated-ai-tasks",
     name: "generated-ai-tasks",
+    meta: { requiresAuth: true },
     component: () => import("../views/AITasks.vue"),
   },
-  { path: "/ai-tasks", name: "ai-tasks", component: () => import("../views/AITasksView.vue") },
+  {
+    path: "/ai-tasks",
+    name: "ai-tasks",
+    meta: { requiresAuth: true },
+    component: () => import("../views/AITasksView.vue"),
+  },
   // {
   //   path: '/about',
   //   name: 'about',

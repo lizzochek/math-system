@@ -30,7 +30,7 @@
         },
         {
           "task": "A chocolate bar costs x pence and a drink costs y pence. Write down an expression for the cost of {{operands0}} chocolate bars and {{operands1}} drinks.",
-          "answer": "{{operands0}}c+{{operands1}}d"
+          "answer": "{{operands0}}x+{{operands1}}y"
         },
         {
           "task": "Simplify: {{operands0}}x + {{operands1}}x",
@@ -43,7 +43,7 @@
       ],
       "intermediate": [
         {
-          "task": "Solve for x: {{variableCoefficients0}}x {{operators0}} {{operands0}} {{operators1}} {{variableCoefficients0}}x {{operands1}} {{operators2}} = {{operands2}}",
+          "task": "Solve for x: {{variableCoefficients0}}x {{operators0}} {{operands0}} {{operators1}} {{variableCoefficients0}}x {{operators2}} {{operands1}} = {{operands2}}",
           "answer": "({{operands1}} {{reverseOperator(operators0)}} {{operands0}}) / {{variableCoefficients0}}"
         },
         {

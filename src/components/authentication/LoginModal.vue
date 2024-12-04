@@ -114,7 +114,7 @@
             this.$store.dispatch("setPropByName", {
               module: "auth",
               property: "user",
-              value: document.data(),
+              value: JSON.parse(JSON.stringify(document.data())),
             });
             this.$router.push("/my-account");
           })
@@ -132,8 +132,8 @@
               this.$store.dispatch("setPropByName", {
                 module: "auth",
                 property: "user",
-                value: document.data()
-            });
+                value: JSON.parse(JSON.stringify(document.data())),
+              });
               this.$router.push("/my-account");
             })
             .catch((error) => {
