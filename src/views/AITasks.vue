@@ -1,5 +1,7 @@
 <template>
   <div class="task-generator">
+    <!-- Container for tfjs-vis -->
+    <!-- <div id="tfjs-vis-container"></div> -->
     <div
       v-if="isLoading"
       class="flex flex-col h-72 justify-center items-center"
@@ -118,6 +120,7 @@
   import * as tf from "@tensorflow/tfjs";
   import taskJSON from "../data/taskSet.json";
   import getRandomTasks from "../helpers/taskGenerator";
+  // import * as tfvis from "@tensorflow/tfjs-vis";
 
   export default {
     data() {
@@ -188,32 +191,58 @@
         });
 
         const { inputData, outputData } = this.prepareTrainingData();
+        // Show the model summary
+        // tfvis.show.modelSummary({ name: "Model Summary", tab: "Model" }, model);
+
+        // Track the training process with tfjs-vis
+        // const container = { name: "Training Performance", tab: "Training" };
+        // const metrics = ["loss", "acc", "val_loss", "val_acc"]; // Monitor loss and accuracy
+
         await model.fit(inputData, outputData, {
-          epochs: 100,
+          epochs: 20,
           batchSize: 8,
+          validationSplit: 0.2,
+          // callbacks: tfvis.show.fitCallbacks(container, metrics, {
+          //   height: 200,
+          //   callbacks: ["onEpochEnd"],
+          // }),
         });
 
         this.model = model;
 
         inputData.dispose();
         outputData.dispose();
+
+        this.isLoading = false;
       },
       prepareTrainingData() {
-        const trainingData = [
-          // [score, attempts, correct], level (one-hot encoded)
-          { input: [10, 10, 2], level: [1, 0, 0] }, // Beginner
-          { input: [40, 8, 4], level: [1, 0, 0] }, // Beginner
-          { input: [70, 5, 5], level: [0, 1, 0] }, // Intermediate
-          { input: [80, 4, 6], level: [0, 1, 0] }, // Intermediate
-          { input: [95, 2, 9], level: [0, 0, 1] }, // Advanced
-          { input: [100, 1, 10], level: [0, 0, 1] }, // Advanced
-        ];
+        const trainingData = [];
 
+        // Generate random data for 300 samples
+        for (let i = 0; i < 200; i++) {
+          const score = Math.floor(Math.random() * 101); // Random score between 0 and 100
+          const attempts = Math.floor(Math.random() * 10) + 1; // Random attempts between 1 and 10
+          const correct = Math.floor(Math.random() * attempts); // Random correct answers <= attempts
+
+          // Determine the level based on the score
+          let level;
+          if (score < 50) {
+            level = [1, 0, 0]; // Beginner
+          } else if (score < 80) {
+            level = [0, 1, 0]; // Intermediate
+          } else {
+            level = [0, 0, 1]; // Advanced
+          }
+
+          trainingData.push({ input: [score, attempts, correct], level });
+        }
+
+        // Normalize the data
         const inputData = tf.tensor2d(
-          trainingData.map((d) => [d.input[0] / 100, d.input[1] / 10, d.input[2] / 10])
+          trainingData.map((d) => [d.input[0] / 100, d.input[1] / 10, d.input[2] / 10]) // Normalize score, attempts, and correct answers
         );
 
-        const outputData = tf.tensor2d(trainingData.map((d) => d.level));
+        const outputData = tf.tensor2d(trainingData.map((d) => d.level)); // One-hot encoded levels
 
         return { inputData, outputData };
       },

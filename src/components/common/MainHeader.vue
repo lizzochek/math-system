@@ -99,7 +99,6 @@
           { name: "My profile", path: "/my-account" },
           { name: "Courses", path: "/courses" },
           { name: "Authors", path: "/authors" },
-          { name: "About", path: "/about" },
           { name: "Help", path: "/help" },
         ],
       };
