@@ -1,38 +1,42 @@
 <template>
   <div class="min-h-screen bg-gray-900 text-white p-6">
-    <!-- Header -->
     <header class="mb-6 text-center">
-      <h1 class="text-4xl font-bold text-teal-400">Interactive Math Task</h1>
-      <p class="text-gray-300 mt-2">Solve the problem and explore the graph or 3D figure!</p>
+      <h1 class="text-4xl font-bold text-purple-400">Get started with your tasks🥇</h1>
     </header>
-
-    <!-- Task Section -->
-    <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-semibold text-teal-300">Task:</h2>
-      <p class="text-gray-200 mt-4">{{ task }}</p>
-    </section>
-
-    <!-- Graph/3D Figure Section -->
     <div
-      v-if="graphURL"
-      class="mt-8"
+      v-for="(el, idx) in parsedTasks"
+      :key="idx"
+      class="bg-gray-800 p-6 rounded-lg shadow-lg"
     >
-      <h3 class="text-xl font-medium text-teal-400 mb-4">Graph Visualization:</h3>
-      <iframe
-        :src="graphURL"
-        width="100%"
-        height="500px"
-        class="bg-gray-700 rounded-lg"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
-    </div>
+      <h2 class="text-2xl font-semibold text-purple-300">Task:</h2>
+      <p class="text-gray-200 mt-4">{{ el.info }}</p>
+      <div
+        v-if="el.graphURL.length"
+        class="mt-8"
+      >
+        <iframe
+          :src="el.graphURL"
+          width="100%"
+          height="500px"
+          class="bg-gray-700 rounded-lg"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
 
-    <div
-      v-else
-      class="text-gray-400 mt-8 text-center"
-    >
-      No graph or 3D figure detected in the task input.
+        <label
+          for="your-answer"
+          class="pr-4"
+          >Your answer:</label
+        >
+        <input
+          class="mt-4 border rounded-lg bg-gray-600 py-1 px-2"
+          id="your-answer"
+          v-model="yourAnswers[idx]"
+          type="your-answer"
+          placeholder="Enter your answer"
+          required
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -42,8 +46,8 @@
     name: "CourseTask",
     data() {
       return {
-        tasks: "Visualize the graph  see the 3D surface: [3d][x^2+y^2-z^2=0] [3d][z=1]",
-        graphURL: null,
+        parsedTasks: [],
+        yourAnswers: [],
       };
     },
     methods: {
@@ -61,24 +65,45 @@
           ?.map((match) => match.match(/\[([^\]]+)\]\[([^\]]+)\]/)[2])
           .join(";");
 
+        let graphURL = "";
+
         if (graphMatch) {
-          this.graphURL = `https://www.geogebra.org/classic?command=${encodeURIComponent(
-            graphMatch
-          )}`;
+          graphURL = `https://www.geogebra.org/classic?command=${encodeURIComponent(graphMatch)}`;
         } else if (threeDMatch) {
-          this.graphURL = `https://www.geogebra.org/3d?command=${encodeURIComponent(threeDMatch)}`;
+          graphURL = `https://www.geogebra.org/3d?command=${encodeURIComponent(threeDMatch)}`;
+        }
+
+        return graphURL;
+      },
+    },
+    computed: {
+      task() {
+        return this.$store.getters["courses/getTask"];
+      },
+    },
+    created() {
+      this.$store.dispatch("courses/fetchTask", { id: this.$route.params.id });
+    },
+    watch: {
+      task() {
+        if (this.task?.data?.length > 0) {
+          this.task.data.forEach((el) => {
+            const graphURL = this.parseTask(el.info);
+            const parsedInfo = el.info
+              .replace(/\[3d\]\[([^\]]+)\]|\[graph\]\[([^\]]+)\]/g, "")
+              .trim();
+            this.parsedTasks.push({ ...el, graphURL, info: parsedInfo });
+          });
         }
       },
     },
-    // mounted() {
-    //   this.parseTask();
-    // },
   };
 </script>
 
 <style scoped>
   iframe {
-    width: 100%;
-    height: 500px;
+    margin: auto;
+    width: 90%;
+    height: 300px;
   }
 </style>

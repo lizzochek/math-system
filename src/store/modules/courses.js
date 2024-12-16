@@ -9,6 +9,7 @@ export default {
     courseTasks: null,
     courseMaterials: null,
     articles: [],
+    task: null,
   },
   getters: {
     getCourses(state) {
@@ -34,6 +35,9 @@ export default {
     },
     getArticleById: (state) => (id) => {
       return state.articles.find((article) => article.id === id);
+    },
+    getTask: (state) => {
+      return state.task;
     },
   },
   mutations: {
@@ -124,6 +128,15 @@ export default {
         });
       });
     },
+    async fetchTask(state, { rootState, payload }) {
+      state.task = [];
+      let querySnapshot = await getDocs(collection(rootState.db, "tasks"));
+      querySnapshot.forEach((doc) => {
+        if (doc.id == payload.id) {
+          state.task = doc.data();
+        }
+      });
+    },
   },
   actions: {
     async fetchCourses({ commit, rootState }) {
@@ -149,6 +162,9 @@ export default {
     },
     async fetchArticles({ commit, rootState }) {
       commit("fetchArticles", { rootState });
+    },
+    async fetchTask({ commit, rootState }, payload) {
+      commit("fetchTask", { rootState, payload });
     },
   },
 };
