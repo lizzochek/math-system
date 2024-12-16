@@ -146,9 +146,7 @@
         return this.$store.getters["courses/getAuthorById"](id).name;
       },
       findCourseProgress(course) {
-        const userCourse = this.userCourses.find((userCourse) => {
-          return userCourse.courseId === course.id;
-        });
+        const userCourse = this.userCourses.find((userCourse) => userCourse.courseId == course.id);
         const { completedArticles, completedVideos, completedTasks } = userCourse;
         const completed = completedArticles.length + completedTasks.length + completedVideos.length;
         const total =

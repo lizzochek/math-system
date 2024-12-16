@@ -33,7 +33,26 @@
           <p class="text-gray-400">{{ task.description }}</p>
           <div class="flex justify-between items-center">
             <span class="text-sm text-gray-500">Due Date: {{ task.dueDate }}</span>
-            <a class="text-sm text-purple-400 hover:underline">Submit task</a>
+            <div
+              v-if="new Date(task.dueDate) < new Date()"
+              class="text-sm text-purple-400"
+            >
+              Time for task submittion is up😭
+            </div>
+            <div v-else>
+              <a
+                v-if="!completedTasks.find((el) => el.id == task.id)"
+                class="text-sm text-purple-400 hover:underline"
+                @click="$router.push(`/course-task/${task.id}`)"
+                >Submit task✍🏻</a
+              >
+              <div v-else>
+                <span class="text-sm text-green-400"
+                  >Task submitted with the score:
+                  {{ completedTasks.find((el) => el.id == task.id).score }}🥳</span
+                >
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -49,7 +68,10 @@
             :key="index"
             class="p-4 bg-gray-700 rounded-lg"
           >
-            <h3 class="font-semibold text-lg">{{ article.title }}</h3>
+            <div class="flex flex-row gap-2">
+              <h3 class="font-semibold text-lg">{{ article.title }}</h3>
+              <p v-if="completedArticles.includes(article.id)">✅</p>
+            </div>
             <a
               @click="$router.push(`/article/${article.id}?courseId=${course.id}`)"
               class="text-purple-400 text-sm hover:underline mt-2 block"
@@ -64,7 +86,10 @@
             :key="index"
             class="p-4 bg-gray-700 rounded-lg"
           >
-            <h3 class="font-semibold text-lg">{{ video.title }}</h3>
+            <div class="flex flex-row gap-2">
+              <h3 class="font-semibold text-lg">{{ video.title }}</h3>
+              <p v-if="completedVideos.includes(video.id)">✅</p>
+            </div>
             <a
               :href="video.link"
               class="text-purple-400 text-sm hover:underline mt-2 block"
@@ -183,6 +208,9 @@
             text: "I found the lecture notes really helpful for solving the first-order equations. Happy to share!",
           },
         ],
+        completedArticles: [],
+        completedVideos: [],
+        completedTasks: [],
       };
     },
     async created() {
@@ -190,6 +218,16 @@
       this.$store.dispatch("courses/getCourseTasks", { id: this.course.id });
       this.$store.dispatch("courses/getCourseMaterials", { course: this.course });
       this.$store.dispatch("courses/fetchAuthors");
+
+      const userCourse = this.$store.getters["auth/getUser"].userCourses.find(
+        (el) => (el.courseId = this.course.id)
+      );
+      const { completedArticles, completedVideos, completedTasks } = JSON.parse(
+        JSON.stringify(userCourse)
+      );
+      this.completedArticles = completedArticles;
+      this.completedVideos = completedVideos;
+      this.completedTasks = completedTasks;
     },
     computed: {
       course() {
@@ -213,6 +251,7 @@
         const { completedArticles, completedVideos, completedTasks } = JSON.parse(
           JSON.stringify(userCourse)
         );
+
         const completed = completedArticles.length + completedTasks.length + completedVideos.length;
 
         const total =
