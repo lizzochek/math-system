@@ -45,6 +45,27 @@ export default {
 
       state.user.userAiTasks[topic] = newData;
     },
+    async markTaskCompleted(state, { rootState, payload }) {
+      const { id, score, courseId } = payload;
+      const userData = await getDoc(doc(rootState.db, "users", state.user.uid.trim()));
+
+      const newData = userData.data().userCourses.map((course) => {
+        if (course.courseId === Number(courseId)) {
+          course.completedTasks.push({ id: Number(id), score });
+        }
+        return course;
+      });
+
+      await updateDoc(doc(rootState.db, "users", state.user.uid.trim()), {
+        userCourses: newData,
+      });
+
+      state.user.userCourses = newData;
+    },
+    async fetchUser(state, { rootState }) {
+      const userData = await getDoc(doc(rootState.db, "users", state.user.uid.trim()));
+      state.user = userData.data();
+    },
   },
   actions: {
     logout({ commit }) {
@@ -55,6 +76,12 @@ export default {
     },
     setAiTasks({ commit, rootState }, payload) {
       commit("setAiTasks", { rootState, payload });
+    },
+    markTaskCompleted({ commit, rootState }, payload) {
+      commit("markTaskCompleted", { rootState, payload });
+    },
+    fetchUser({ commit, rootState }) {
+      commit("fetchUser", { rootState });
     },
   },
 };

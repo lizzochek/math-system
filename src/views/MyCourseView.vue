@@ -43,7 +43,7 @@
               <a
                 v-if="!completedTasks.find((el) => el.id == task.id)"
                 class="text-sm text-purple-400 hover:underline"
-                @click="$router.push(`/course-task/${task.id}`)"
+                @click="$router.push(`/course-task/${task.id}?courseId=${course.id}`)"
                 >Submit task✍🏻</a
               >
               <div v-else>
@@ -51,6 +51,12 @@
                   >Task submitted with the score:
                   {{ completedTasks.find((el) => el.id == task.id).score }}🥳</span
                 >
+                <br />
+                <a
+                  class="text-sm text-purple-400 hover:underline"
+                  @click="$router.push(`/course-task/${task.id}?courseId=${course.id}`)"
+                  >See task
+                </a>
               </div>
             </div>
           </div>
@@ -218,6 +224,7 @@
       this.$store.dispatch("courses/getCourseTasks", { id: this.course.id });
       this.$store.dispatch("courses/getCourseMaterials", { course: this.course });
       this.$store.dispatch("courses/fetchAuthors");
+      this.$store.dispatch("auth/fetchUser");
 
       const userCourse = this.$store.getters["auth/getUser"].userCourses.find(
         (el) => (el.courseId = this.course.id)

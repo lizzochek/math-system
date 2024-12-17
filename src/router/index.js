@@ -54,11 +54,11 @@ const routes = [
     meta: { requiresAuth: true },
     component: () => import("../views/CourseTask.vue"),
   },
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  // }
+  {
+    path: "/help",
+    name: "help",
+    component: () => import("../views/HelpView.vue"),
+  },
 ];
 
 const router = createRouter({

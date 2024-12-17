@@ -133,7 +133,10 @@ export default {
       let querySnapshot = await getDocs(collection(rootState.db, "tasks"));
       querySnapshot.forEach((doc) => {
         if (doc.id == payload.id) {
-          state.task = doc.data();
+          state.task = {
+            id: doc.id,
+            ...doc.data(),
+          };
         }
       });
     },
