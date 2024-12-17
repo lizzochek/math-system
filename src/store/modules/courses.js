@@ -10,10 +10,14 @@ export default {
     courseMaterials: null,
     articles: [],
     task: null,
+    tasks: [],
   },
   getters: {
     getCourses(state) {
       return state.courses;
+    },
+    getTasks(state) {
+      return state.tasks;
     },
     getAuthorById(state) {
       return (id) => state.authors.find((author) => author.id === id);
@@ -140,6 +144,18 @@ export default {
         }
       });
     },
+    async fetchTasksById(state, { rootState, payload }) {
+      state.tasks = [];
+      let querySnapshot = await getDocs(collection(rootState.db, "tasks"));
+      querySnapshot.forEach((doc) => {
+        if (payload.ids.includes(Number(doc.id))) {
+          state.tasks.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        }
+      });
+    },
   },
   actions: {
     async fetchCourses({ commit, rootState }) {
@@ -168,6 +184,9 @@ export default {
     },
     async fetchTask({ commit, rootState }, payload) {
       commit("fetchTask", { rootState, payload });
+    },
+    async fetchTasksById({ commit, rootState }, payload) {
+      commit("fetchTasksById", { rootState, payload });
     },
   },
 };

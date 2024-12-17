@@ -15,12 +15,7 @@
           <p class="text-sm text-center text-gray-400">{{ user.email }}</p>
           <p class="text-sm text-gray-400">Student | Advanced Math Class</p>
 
-          <VDatePicker
-            class="mt-10"
-            v-model="selectedDate"
-            color="indigo"
-            is-dark="true"
-          />
+          <TaskCalendar />
 
           <button
             class="px-3 mt-10 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg"
@@ -97,7 +92,9 @@
 </template>
 
 <script>
+  import TaskCalendar from "@/components/common/TaskCalendar.vue";
   export default {
+    components: { TaskCalendar },
     data() {
       return {
         activity: [
